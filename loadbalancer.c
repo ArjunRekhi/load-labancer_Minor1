@@ -28,6 +28,11 @@ server.sin_port = htons(5000);
          return 1;
   }
 
+// listen for the incoming port
+
+listen(socket_descreptor, 5);
+puts("listining for the incoming requests");
+
   puts("bind done");
 
 return 0;
