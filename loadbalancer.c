@@ -20,6 +20,16 @@ server.sin_family= AF_INET;
 server.sin_addr.s_addr= INADDR_ANY;
 server.sin_port = htons(5000);
 
+
+// binding the socket with the port
+ if(bind(socket_descreptor,(struct sockaddr *)&server ,sizeof(server))< 0){
+
+         puts("socket bind failed");
+         return 1;
+  }
+
+  puts("bind done");
+
 return 0;
 
 }
