@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include<arpa/inet.h>
 #include<sys/socket.h>
+#include<string.h> // for strlen function
 
 // back end server connection
 void connect_backend_server(int client_sd){
