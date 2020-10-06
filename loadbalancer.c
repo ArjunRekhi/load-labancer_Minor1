@@ -1,7 +1,68 @@
-
+#include <curl/curl.h>  
 #include <stdio.h>
 #include<arpa/inet.h>
 #include<sys/socket.h>
+
+// back end server connection
+void connect_backend_server(int client_sd){
+
+
+  char h[65535];
+
+
+    memset(h, '\0', sizeof(h));
+      read(client_sd , h ,sizeof(h));
+        
+        fputs(h,stdout);
+
+CURL *curl;
+  CURLcode res;
+
+  curl_global_init(CURL_GLOBAL_ALL);
+
+  curl = curl_easy_init();
+  if(curl) {
+
+
+ struct curl_slist *chunk = NULL;
+
+// extrating headers
+  
+
+    char *token = strtok(h, "\r\n"); 
+     char endpoint[30];
+     int k=0;
+     while (token != NULL) 
+    { 
+      printf("%s\n", token); 
+      chunk =curl_slist_append(chunk , token);
+      if(k==0)
+       strcpy(endpoint,token);
+      token = strtok(NULL, "\r\n"); 
+      k++;
+    } 
+
+
+printf("\nextract heades\n");
+
+
+
+    /* always cleanup */
+    curl_easy_cleanup(curl);
+
+   curl_slist_free_all(chunk);
+  }
+
+  curl_global_cleanup();
+ 
+  // closing client socket
+   shutdown(client_sd, SHUT_WR);
+   close(client_sd);
+
+
+}
+
+
 
 int main(int argc , char *argv[]){
 
@@ -28,6 +89,9 @@ server.sin_port = htons(5000);
          return 1;
   }
 
+//calling backend server
+connect_backend_server(new_sock);  
+  
 // listen for the incoming port
 
 listen(socket_descreptor, 5);
