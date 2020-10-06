@@ -41,8 +41,18 @@ CURL *curl;
       token = strtok(NULL, "\r\n"); 
       k++;
     } 
-
-
+    
+    k=0;
+  token=strtok(endpoint," ");
+  while (token != NULL) 
+    { 
+      printf("%s\n", token); 
+      chunk =curl_slist_append(chunk , token);
+      if(k==1)
+       strcpy(endpoint,token);
+      token = strtok(NULL, " "); 
+      k++;
+    } 
 
 
 
