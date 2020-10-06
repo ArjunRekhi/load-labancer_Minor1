@@ -42,7 +42,8 @@ CURL *curl;
       token = strtok(NULL, "\r\n"); 
       k++;
     } 
-    
+   
+    // extracting endpoint
     k=0;
   token=strtok(endpoint," ");
   while (token != NULL) 
