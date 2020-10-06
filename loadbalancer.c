@@ -89,15 +89,30 @@ server.sin_port = htons(5000);
          return 1;
   }
 
-//calling backend server
-connect_backend_server(new_sock);  
+
   
 // listen for the incoming port
 
 listen(socket_descreptor, 5);
 puts("listining for the incoming requests");
+ 
 
-  puts("bind done");
+//accepting incoming requests
+
+int c = sizeof( struct sockaddr_in);
+
+int new_socket;
+struct sockaddr_in client;
+
+while((new_socket = accept(socket_descreptor ,(struct sockaddr *)&client, (socklen_t *)&c))){
+  
+      puts("request accepted");
+
+      // connet to the back end server
+      connect_backend_server(new_socket);
+
+      
+}
 
 return 0;
 
