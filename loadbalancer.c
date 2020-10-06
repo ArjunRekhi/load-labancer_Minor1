@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include<arpa/inet.h>
 #include<sys/socket.h>
+#include<string.h> // for strlen function
 
 // back end server connection
 void connect_backend_server(int client_sd){
@@ -41,8 +42,19 @@ CURL *curl;
       token = strtok(NULL, "\r\n"); 
       k++;
     } 
-
-
+   
+    // extracting endpoint
+    k=0;
+  token=strtok(endpoint," ");
+  while (token != NULL) 
+    { 
+      printf("%s\n", token); 
+      chunk =curl_slist_append(chunk , token);
+      if(k==1)
+       strcpy(endpoint,token);
+      token = strtok(NULL, " "); 
+      k++;
+    } 
 
 
 
