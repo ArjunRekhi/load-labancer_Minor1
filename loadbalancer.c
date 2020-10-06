@@ -43,7 +43,7 @@ CURL *curl;
     } 
 
 
-printf("\nextract heades\n");
+
 
 
 
