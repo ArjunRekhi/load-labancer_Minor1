@@ -4,6 +4,38 @@
 #include<sys/socket.h>
 #include<string.h> // for strlen function
 
+void connect_backend_server(int); 
+ char* roundRobin();
+void *connection_handler(void *);
+
+// round robin implentation
+char* roundRobin(){
+
+
+if(current_server==1)
+ current_server=-1;
+
+
+  int i=0;
+
+for(i=current_server+1;i<total_server;i++){
+// checking if the current server is healthy or not
+  if(hc[i]!=0){
+    current_server=i;
+    break;
+}
+}
+
+
+char rq[]="http://";
+char host[30];
+
+strcpy(host,a[current_server]);
+
+return strcat(rq,host);
+
+}
+
 // back end server connection
 void connect_backend_server(int client_sd){
 
@@ -58,7 +90,11 @@ CURL *curl;
 
 
 
-
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+    curl_easy_setopt(curl, CURLOPT_URL, strcat(roundRobin(),endpoint));
+    
+    
+    
     /* always cleanup */
     curl_easy_cleanup(curl);
 
