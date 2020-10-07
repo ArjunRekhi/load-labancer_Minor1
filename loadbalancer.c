@@ -122,6 +122,10 @@ CURL *curl;
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  WriteMemoryCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     
+	  
+    write(client_sd , s.memory ,s.size);
+    free(s.memory);
+	  
     /* always cleanup */
     curl_easy_cleanup(curl);
 
