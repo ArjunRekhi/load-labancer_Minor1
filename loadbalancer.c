@@ -42,6 +42,26 @@ return strcat(rq,host);
 
 }
 
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
+		void *userp) {
+	size_t realsize = size * nmemb;
+	struct MemoryStruct *mem = (struct MemoryStruct *) userp;
+
+	mem->memory = (char*)realloc(mem->memory, mem->size + realsize + 1);
+	if (mem->memory == NULL) {
+		/* out of memory! */
+		printf("not enough memory (realloc returned NULL)\n");
+		return 0;
+	}
+
+	memcpy(&(mem->memory[mem->size]), contents, realsize);
+	mem->size += realsize;
+	mem->memory[mem->size] = 0;
+
+	return realsize;
+}
+
+
 // back end server connection
 void connect_backend_server(int client_sd){
 
