@@ -27,6 +27,11 @@ for(i=current_server+1;i<total_server;i++){
 }
 }
 
+ 
+struct MemoryStruct {
+  char *memory;
+	size_t size;
+};
 
 char rq[]="http://";
 char host[30];
