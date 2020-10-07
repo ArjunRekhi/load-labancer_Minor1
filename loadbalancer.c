@@ -82,8 +82,8 @@ CURL *curl;
   curl = curl_easy_init();
   if(curl) {
 
-
- struct curl_slist *chunk = NULL;
+	   struct MemoryStruct s;
+          struct curl_slist *chunk = NULL;
 
 // extrating headers
   
@@ -119,7 +119,8 @@ CURL *curl;
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(curl, CURLOPT_URL, strcat(roundRobin(),endpoint));
     
-    
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  WriteMemoryCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     
     /* always cleanup */
     curl_easy_cleanup(curl);
