@@ -3,6 +3,7 @@
 #include<arpa/inet.h>
 #include<sys/socket.h>
 #include<string.h> // for strlen function
+#include<unistd.h>	//write
 
 void connect_backend_server(int); 
  char* roundRobin();
