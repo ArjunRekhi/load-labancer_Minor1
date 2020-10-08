@@ -3,6 +3,7 @@
 #include<arpa/inet.h>
 #include<sys/socket.h>
 #include<string.h> // for strlen function
+#include<unistd.h>	//write
 
 void connect_backend_server(int); 
  char* roundRobin();
@@ -26,6 +27,11 @@ for(i=current_server+1;i<total_server;i++){
 }
 }
 
+ 
+struct MemoryStruct {
+  char *memory;
+	size_t size;
+};
 
 char rq[]="http://";
 char host[30];
@@ -35,6 +41,26 @@ strcpy(host,a[current_server]);
 return strcat(rq,host);
 
 }
+
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
+		void *userp) {
+	size_t realsize = size * nmemb;
+	struct MemoryStruct *mem = (struct MemoryStruct *) userp;
+
+	mem->memory = (char*)realloc(mem->memory, mem->size + realsize + 1);
+	if (mem->memory == NULL) {
+		/* out of memory! */
+		printf("not enough memory (realloc returned NULL)\n");
+		return 0;
+	}
+
+	memcpy(&(mem->memory[mem->size]), contents, realsize);
+	mem->size += realsize;
+	mem->memory[mem->size] = 0;
+
+	return realsize;
+}
+
 
 // back end server connection
 void connect_backend_server(int client_sd){
@@ -56,8 +82,8 @@ CURL *curl;
   curl = curl_easy_init();
   if(curl) {
 
-
- struct curl_slist *chunk = NULL;
+	   struct MemoryStruct s;
+          struct curl_slist *chunk = NULL;
 
 // extrating headers
   
@@ -93,8 +119,13 @@ CURL *curl;
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(curl, CURLOPT_URL, strcat(roundRobin(),endpoint));
     
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  WriteMemoryCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     
-    
+	  
+    write(client_sd , s.memory ,s.size);
+    free(s.memory);
+	  
     /* always cleanup */
     curl_easy_cleanup(curl);
 
