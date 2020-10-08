@@ -9,6 +9,30 @@ void connect_backend_server(int);
  char* roundRobin();
 void *connection_handler(void *);
 
+
+// inital current server value
+int current_server=-1;
+
+// total number of server
+int total_server=2;
+
+// back end servers
+const char a[2][20]={
+ "localhost:8888",
+ "localhost:8000",
+
+};
+
+// character arry for response heander
+char res_header[100]; 
+
+struct MemoryStruct {
+  char *memory;
+	size_t size;
+};
+
+
+
 // round robin implentation
 char* roundRobin(){
 
@@ -28,10 +52,7 @@ for(i=current_server+1;i<total_server;i++){
 }
 
  
-struct MemoryStruct {
-  char *memory;
-	size_t size;
-};
+
 
 char rq[]="http://";
 char host[30];
