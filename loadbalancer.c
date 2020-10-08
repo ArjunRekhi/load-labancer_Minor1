@@ -32,6 +32,20 @@ struct MemoryStruct {
 };
 
 
+static size_t header_callback(char *buffer, size_t size,
+                              size_t nitems, void *userdata)
+{
+      
+  size_t numbytes = size * nitems;
+    printf("%.*s\n", numbytes, buffer);
+
+  // storing response header
+   strcat(res_header,buffer);
+ 
+    return numbytes;
+}
+
+
 
 // round robin implentation
 char* roundRobin(){
