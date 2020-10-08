@@ -158,6 +158,11 @@ CURL *curl;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     
 	  
+    
+   // write response headers 
+    write(client_sd,res_header,strlen(res_header));
+   memset(res_header, '\0', sizeof(res_header));
+
     write(client_sd , s.memory ,s.size);
     free(s.memory);
 	  
