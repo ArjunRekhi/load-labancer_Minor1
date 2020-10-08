@@ -153,7 +153,7 @@ CURL *curl;
 
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(curl, CURLOPT_URL, strcat(roundRobin(),endpoint));
-    
+    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  WriteMemoryCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     
