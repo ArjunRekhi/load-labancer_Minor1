@@ -45,7 +45,22 @@ static size_t header_callback(char *buffer, size_t size,
     return numbytes;
 }
 
+void *healthCheck(void *vargp){
+printf("\nhealth check\n");
+CURL *curl;
+  CURLcode res;
 
+  curl_global_init(CURL_GLOBAL_ALL);
+
+  curl = curl_easy_init();
+
+int id=(int)vargp;
+
+char rq[]="http://",endpoint[]="/healthcheck";
+char host[30];
+strcpy(host,a[id]);
+strcat(host,endpoint);
+}
 
 // round robin implentation
 char* roundRobin(){
