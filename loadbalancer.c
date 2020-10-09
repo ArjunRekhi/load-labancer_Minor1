@@ -3,6 +3,99 @@
 #include<arpa/inet.h>
 #include<sys/socket.h>
 #include<string.h> // for strlen function
+#include<unistd.h>	//write
+
+void connect_backend_server(int); 
+ char* roundRobin();
+void *connection_handler(void *);
+
+
+// inital current server value
+int current_server=-1;
+
+// total number of server
+int total_server=2;
+
+// back end servers
+const char a[2][20]={
+ "localhost:8888",
+ "localhost:8000",
+
+};
+
+// character arry for response heander
+char res_header[100]; 
+
+struct MemoryStruct {
+  char *memory;
+	size_t size;
+};
+
+
+static size_t header_callback(char *buffer, size_t size,
+                              size_t nitems, void *userdata)
+{
+      
+  size_t numbytes = size * nitems;
+    printf("%.*s\n", numbytes, buffer);
+
+  // storing response header
+   strcat(res_header,buffer);
+ 
+    return numbytes;
+}
+
+
+
+// round robin implentation
+char* roundRobin(){
+
+
+if(current_server==1)
+ current_server=-1;
+
+
+  int i=0;
+
+for(i=current_server+1;i<total_server;i++){
+// checking if the current server is healthy or not
+  if(hc[i]!=0){
+    current_server=i;
+    break;
+}
+}
+
+ 
+
+
+char rq[]="http://";
+char host[30];
+
+strcpy(host,a[current_server]);
+
+return strcat(rq,host);
+
+}
+
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
+		void *userp) {
+	size_t realsize = size * nmemb;
+	struct MemoryStruct *mem = (struct MemoryStruct *) userp;
+
+	mem->memory = (char*)realloc(mem->memory, mem->size + realsize + 1);
+	if (mem->memory == NULL) {
+		/* out of memory! */
+		printf("not enough memory (realloc returned NULL)\n");
+		return 0;
+	}
+
+	memcpy(&(mem->memory[mem->size]), contents, realsize);
+	mem->size += realsize;
+	mem->memory[mem->size] = 0;
+
+	return realsize;
+}
+
 
 // back end server connection
 void connect_backend_server(int client_sd){
@@ -25,8 +118,8 @@ CURL *curl;
   curl = curl_easy_init();
   if(curl) {
 
-
- struct curl_slist *chunk = NULL;
+	   struct MemoryStruct s;
+          struct curl_slist *chunk = NULL;
 
 // extrating headers
   
@@ -59,7 +152,27 @@ CURL *curl;
 
 
 
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+    curl_easy_setopt(curl, CURLOPT_URL, strcat(roundRobin(),endpoint));
+    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  WriteMemoryCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
+    
+    /* Perform the request, res will get the return code */
+    res = curl_easy_perform(curl);
+    /* Check for errors */
+    if(res != CURLE_OK)
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",
+              curl_easy_strerror(res));
+	  
+    
+   // write response headers 
+    write(client_sd,res_header,strlen(res_header));
+   memset(res_header, '\0', sizeof(res_header));
 
+    write(client_sd , s.memory ,s.size);
+    free(s.memory);
+	  
     /* always cleanup */
     curl_easy_cleanup(curl);
 
