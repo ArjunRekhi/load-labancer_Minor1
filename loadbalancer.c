@@ -60,6 +60,26 @@ char rq[]="http://",endpoint[]="/healthcheck";
 char host[30];
 strcpy(host,a[id]);
 strcat(host,endpoint);
+	
+if(curl) {
+    
+curl_easy_setopt(curl, CURLOPT_URL, strcat(rq,host));
+    
+curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+
+    res = curl_easy_perform(curl);
+    if(res != CURLE_OK)
+       hc[id]=0;     
+       else{
+        hc[id]=1;  
+       }
+   
+    curl_easy_cleanup(curl);
+    
+  
+  }
+ 
+  curl_global_cleanup();
 }
 
 // round robin implentation
