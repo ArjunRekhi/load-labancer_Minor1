@@ -45,7 +45,42 @@ static size_t header_callback(char *buffer, size_t size,
     return numbytes;
 }
 
+void *healthCheck(void *vargp){
+printf("\nhealth check\n");
+CURL *curl;
+  CURLcode res;
 
+  curl_global_init(CURL_GLOBAL_ALL);
+
+  curl = curl_easy_init();
+
+int id=(int)vargp;
+
+char rq[]="http://",endpoint[]="/healthcheck";
+char host[30];
+strcpy(host,a[id]);
+strcat(host,endpoint);
+	
+if(curl) {
+    
+curl_easy_setopt(curl, CURLOPT_URL, strcat(rq,host));
+    
+curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+/* Check for errors */
+    res = curl_easy_perform(curl);
+    if(res != CURLE_OK)
+       hc[id]=0;     // if no response from the server
+       else{
+        hc[id]=1;    // get response from the server
+       }
+   
+    curl_easy_cleanup(curl);
+    
+  /* always cleanup */
+  }
+ 
+  curl_global_cleanup();
+}
 
 // round robin implentation
 char* roundRobin(){
@@ -102,6 +137,7 @@ void connect_backend_server(int client_sd){
 
 
   char h[65535];
+  int *hc;   // (shared memory) pointer for array which contain current health of the back end server
 
 
     memset(h, '\0', sizeof(h));
