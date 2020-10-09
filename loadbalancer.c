@@ -26,8 +26,6 @@ const char a[2][20]={
 // character arry for response heander
 char res_header[100]; 
 
-int *hc;
-
 struct MemoryStruct {
   char *memory;
 	size_t size;
