@@ -23,6 +23,8 @@ const char a[2][20]={
 
 };
 
+ int *hc;   //  pointer for array which contain current health of the back end server
+
 // character arry for response heander
 char res_header[100]; 
 
@@ -137,7 +139,7 @@ void connect_backend_server(int client_sd){
 
 
   char h[65535];
-  int *hc;   // (shared memory) pointer for array which contain current health of the back end server
+ 
 
 
     memset(h, '\0', sizeof(h));
