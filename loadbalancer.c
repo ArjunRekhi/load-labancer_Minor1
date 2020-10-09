@@ -9,6 +9,7 @@ void connect_backend_server(int client_sd){
 
 
   char h[65535];
+  int *hc;
 
 
     memset(h, '\0', sizeof(h));
