@@ -227,9 +227,12 @@ CURL *curl;
 
 }
 
-
-
 int main(int argc , char *argv[]){
+	
+	key_t key = ftok("shmfile",65); 
+  
+    int shmid = shmget(IPC_PRIVATE,2*1024,0666|IPC_CREAT);
+    hc = (int*) shmat(shmid,NULL,0);
 
 //creating a socket
 int socket_descreptor = socket(AF_INET, SOCK_STREAM, 0);
