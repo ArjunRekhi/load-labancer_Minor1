@@ -271,9 +271,27 @@ puts("listining for the incoming requests");
 //accepting incoming requests
 
 int c = sizeof( struct sockaddr_in);
-
 int new_socket;
 struct sockaddr_in client;
+int fork_value;
+	
+// fork to run two process parallel
+fork_value= fork();
+
+//child
+if(fork_value==0){
+    pthread_t tid; 
+
+int i;
+
+// calling healthcheck after every 5 sec 
+  while(1){
+    for(i=0;i<total_server;i++)
+      pthread_create(&tid, NULL, healthCheck,(void *)i); 
+ sleep(5);
+}
+
+}
 
 shmctl(shmid, IPC_RMID, NULL);
 return 0;
