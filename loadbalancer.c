@@ -327,3 +327,12 @@ shmctl(shmid, IPC_RMID, NULL);
 return 0;
 
 }
+
+void *connection_handler(void *socket_desc){
+
+	int sock = *(int*)socket_desc;
+
+         connect_backend_server(sock);
+
+}
+
