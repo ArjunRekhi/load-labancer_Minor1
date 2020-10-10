@@ -5,7 +5,7 @@
 #include<string.h> // for strlen function
 #include<unistd.h>	//write
 #include <sys/ipc.h> 
-#include <sys/shm.h>
+#include <sys/shm.h>   // shared memeory
 
 void connect_backend_server(int); 
  char* roundRobin();
@@ -230,9 +230,11 @@ CURL *curl;
 int main(int argc , char *argv[]){
 	
 	key_t key = ftok("shmfile",65); 
-  
+  // shared memeory
+  // ftok to generate unique key 
     int shmid = shmget(IPC_PRIVATE,2*1024,0666|IPC_CREAT);
-    hc = (int*) shmat(shmid,NULL,0);
+	// shmget returns an identifier in shmid
+    hc = (int*) shmat(shmid,NULL,0); // shmat to attach to shared memory
 
 //creating a socket
 int socket_descreptor = socket(AF_INET, SOCK_STREAM, 0);
