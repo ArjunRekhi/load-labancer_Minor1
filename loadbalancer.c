@@ -274,15 +274,6 @@ int c = sizeof( struct sockaddr_in);
 int new_socket;
 struct sockaddr_in client;
 
-while((new_socket = accept(socket_descreptor ,(struct sockaddr *)&client, (socklen_t *)&c))){
-  
-      puts("request accepted");
-
-      // connet to the back end server
-      connect_backend_server(new_socket);
-
-      
-}
 shmctl(shmid, IPC_RMID, NULL);
 return 0;
 
