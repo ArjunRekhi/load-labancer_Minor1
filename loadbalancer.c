@@ -6,6 +6,7 @@
 #include<unistd.h>	//write
 #include <sys/ipc.h> 
 #include <sys/shm.h>   // shared memeory
+#include<pthread.h> //for threading , link with lpthread
 
 void connect_backend_server(int); 
  char* roundRobin();
