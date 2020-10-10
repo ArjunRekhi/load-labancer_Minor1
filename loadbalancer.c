@@ -281,7 +281,7 @@ while((new_socket = accept(socket_descreptor ,(struct sockaddr *)&client, (sockl
 
       
 }
-
+shmctl(shmid, IPC_RMID, NULL);
 return 0;
 
 }
