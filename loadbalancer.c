@@ -4,6 +4,8 @@
 #include<sys/socket.h>
 #include<string.h> // for strlen function
 #include<unistd.h>	//write
+#include <sys/ipc.h> 
+#include <sys/shm.h>
 
 void connect_backend_server(int); 
  char* roundRobin();
