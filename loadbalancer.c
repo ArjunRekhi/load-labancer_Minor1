@@ -9,6 +9,81 @@ void connect_backend_server(int);
  char* roundRobin();
 void *connection_handler(void *);
 
+
+// inital current server value
+int current_server=-1;
+
+// total number of server
+int total_server=2;
+
+// back end servers
+const char a[2][20]={
+ "localhost:8888",
+ "localhost:8000",
+
+};
+
+ int *hc;   //  pointer for array which contain current health of the back end server
+
+// character arry for response heander
+char res_header[100]; 
+
+struct MemoryStruct {
+  char *memory;
+	size_t size;
+};
+
+
+static size_t header_callback(char *buffer, size_t size,
+                              size_t nitems, void *userdata)
+{
+      
+  size_t numbytes = size * nitems;
+    printf("%.*s\n", numbytes, buffer);
+
+  // storing response header
+   strcat(res_header,buffer);
+ 
+    return numbytes;
+}
+
+void *healthCheck(void *vargp){
+printf("\nhealth check\n");
+CURL *curl;
+  CURLcode res;
+
+  curl_global_init(CURL_GLOBAL_ALL);
+
+  curl = curl_easy_init();
+
+int id=(int)vargp;
+
+char rq[]="http://",endpoint[]="/healthcheck";
+char host[30];
+strcpy(host,a[id]);
+strcat(host,endpoint);
+	
+if(curl) {
+    
+curl_easy_setopt(curl, CURLOPT_URL, strcat(rq,host));
+    
+curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+/* Check for errors */
+    res = curl_easy_perform(curl);
+    if(res != CURLE_OK)
+       hc[id]=0;     // if no response from the server
+       else{
+        hc[id]=1;    // get response from the server
+       }
+   
+    curl_easy_cleanup(curl);
+    
+  /* always cleanup */
+  }
+ 
+  curl_global_cleanup();
+}
+
 // round robin implentation
 char* roundRobin(){
 
@@ -28,10 +103,7 @@ for(i=current_server+1;i<total_server;i++){
 }
 
  
-struct MemoryStruct {
-  char *memory;
-	size_t size;
-};
+
 
 char rq[]="http://";
 char host[30];
@@ -67,6 +139,7 @@ void connect_backend_server(int client_sd){
 
 
   char h[65535];
+ 
 
 
     memset(h, '\0', sizeof(h));
@@ -118,11 +191,22 @@ CURL *curl;
 
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(curl, CURLOPT_URL, strcat(roundRobin(),endpoint));
-    
+    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  WriteMemoryCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     
+    /* Perform the request, res will get the return code */
+    res = curl_easy_perform(curl);
+    /* Check for errors */
+    if(res != CURLE_OK)
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",
+              curl_easy_strerror(res));
 	  
+    
+   // write response headers 
+    write(client_sd,res_header,strlen(res_header));
+   memset(res_header, '\0', sizeof(res_header));
+
     write(client_sd , s.memory ,s.size);
     free(s.memory);
 	  
