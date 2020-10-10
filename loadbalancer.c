@@ -293,6 +293,36 @@ int i;
 
 }
 
+if(fork_value!=0){
+// accepting incoming client request
+while((new_socket = accept(socket_descreptor ,(struct sockaddr *)&client, (socklen_t *)&c))){
+  
+      puts("request accepted");
+
+     
+
+       pthread_t sniffer_thread;
+
+       new_sock = malloc(1);
+       *new_sock = new_socket;
+
+      if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*)new_sock) < 0)
+		{
+			perror("could not create thread");
+			return 1;
+		}
+		
+
+}
+
+ if(new_socket<0)
+  {
+      puts("request accept failed");
+      return 0;
+}
+
+}
+	
 shmctl(shmid, IPC_RMID, NULL);
 return 0;
 
