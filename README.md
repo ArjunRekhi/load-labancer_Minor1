@@ -42,7 +42,7 @@ The load balancer works on the various algorithm but most commonly used algorith
 
 # Compile
 ```
-gcc -pthread loadbalancer.c.c -o trial3 -L/usr.include/curl/lib -lcurl
+gcc -pthread loadbalancer.c -o trial3 -L/usr.include/curl/lib -lcurl
 ```
 
 # Run 
