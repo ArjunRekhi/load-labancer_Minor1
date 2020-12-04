@@ -9,29 +9,29 @@
 * __Economy:__ We can buy the latest machine to avoid failures and make replicas but there is no certain guarantee that it will not fail and the hardware gets expensive day by day. So, there are some scenarios where vertical scaling is the right choice but for maintaining web application and servers, it is not an economical procurement choice
 #     So, the question arises that __“ HOW DO WE SOLVE THESE PROBLEMS” ?__
 
-##Solution
+## Solution
 
 The problem can be solved by the use of a load balancer. Load Balancer sits in front of the servers and routes the client requests across all the server in a efficient and fast manner and ensure that no server overloaded with requests which could degrade our application performance also if a single server goes down load balancer stop sending traffic to that server and redirect traffic to other server which are online.
 
 
-##Introduction
+## Introduction
 
 * A load balancer is a program that will act as an interface between client and server so as to distribute a large number of requests to different servers so that there will be less burden on a single server.
 * Client can use the IP address of load balancer to generate a request and load balancer will receive this request.
 * Load balancer will go to the corresponding server on behalf of client, will process their requests and will return the output to the client on behalf of the server. 
 
-##Algorithm used:
-#ROUND-ROBIN
+## Algorithm used:
+# ROUND-ROBIN
 
 The round robin algorithm allocates task to the next VM/instance in the queue irrespective of the load on that VM/instance. The Round Robin policy does not consider the resource capabilities, priority, and the length of the tasks. So, the higher priority and the lengthy tasks end up with the higher response times.
 
-##Methodology
+## Methodology
 
 We will create an Application Load Balancer program which will balance the incoming user requests across multiple back end servers. It will scan the incoming requests based on the request content and forward the request based on the request type.
 For example,if the request coming for the images then the load balancer automatically forward the request to the end point which is serving the images.
 The load balancer works on the various algorithm but most commonly used algorithm is round robin algorithm which will forward the request sequentially to the back end server so that all the server have balance load.
 
-##System Requirements
+## System Requirements
 **Software Requirements:**
 * Code Editor
 * Cloud Resources ( server instance )
@@ -40,17 +40,17 @@ The load balancer works on the various algorithm but most commonly used algorith
 
 ### How to Use
 
-#Compile
+# Compile
 ```
-gcc -pthread trial3.c -o trial3 -L/usr.include/curl/lib -lcurl
-```
-
-#Run 
-```
-./trial3
+gcc -pthread loadbalancer.c.c -o trial3 -L/usr.include/curl/lib -lcurl
 ```
 
-##References
+# Run 
+```
+./loadbalancer.c
+```
+
+## References
 [1]. https://blog.radware.com/applicationdelivery/2015/11/history-of-the-cloud-pt1/ 
 [2]. Kansal N J, Chana I 2012 Cloud Load Balancing Techniques : A Step Towards Green Computing IJCSI Int J Comput Sci Issues [Internet]
 [3]. Randles M, Lamb D, Taleb-Bendiab A 2010 A comparative study into distributed load balancing algorithms for cloud computing In: 24th IEEE International Conference on Advanced Information Networking and Applications Workshops, WAINA 2010 p. 551–6
